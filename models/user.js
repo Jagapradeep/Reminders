@@ -12,13 +12,6 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
-  gender: {
-    type: String,
-    enum: {
-      values: ["Male", "Female", "Other"],
-      message: "{VALUE} is not supported",
-    },
-  },
   email: {
     type: String,
     required: true,
@@ -51,10 +44,6 @@ const complexityOptions = {
 function validateUser(user) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(50).label("Name").required(),
-    gender: Joi.string()
-      .valid("Male", "Female", "Other")
-      .label("Gender")
-      .required(),
     email: Joi.string().email().label("E-Mail").required(),
     password: passwordComplexity(complexityOptions),
   });
