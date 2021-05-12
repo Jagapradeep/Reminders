@@ -1,0 +1,5 @@
+{
+    "db": "Reminders_db",
+    "jwtPrivateKey": "Reminders_jwtPrivateKey",
+    "mail-password":"Reminders_mailPassword"
+}
