@@ -27,7 +27,13 @@ router.post("/", auth, async (req, res) => {
 
   const { userId, name, dateTime, description, email } = req.body;
   const { year, month, date, hour, minute } = dateTime;
-  let reminderDate = new Date(year, month, date, hour, minute);
+
+  if (!(year && month && date && hour && minute))
+    return res
+      .status(400)
+      .send("Please send the correct values for Date and Time");
+
+  const reminderDate = new Date(year, month, date, hour, minute);
 
   reminder = new Reminder({
     userId,
@@ -48,6 +54,12 @@ router.put("/:id", auth, async (req, res) => {
 
   const { userId, name, description, dateTime, email } = req.body;
   const { year, month, date, hour, minute } = dateTime;
+
+  if (!(year && month && date && hour && minute))
+    return res
+      .status(400)
+      .send("Please send the correct values for Date and Time");
+
   const reminderDate = new Date(year, month, date, hour, minute);
 
   const reminder = await Reminder.findByIdAndUpdate(
