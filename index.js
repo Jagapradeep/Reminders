@@ -28,12 +28,13 @@ mongoose
     console.log(e);
   });
 
+scheduleMail();
 app.use(express.json());
 
 app.use("/users", users);
 app.use("/reminders", reminders);
 app.use("/auth", auth);
-scheduleMail();
+require("./startup/prod")(app);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(` -info: Listening on port ${port}`));
