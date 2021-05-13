@@ -2,9 +2,14 @@ const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const mongoose = require("mongoose");
 
-const Remainder = mongoose.model(
-  "Remainder",
+const Reminder = mongoose.model(
+  "Reminder",
   new mongoose.Schema({
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -17,8 +22,8 @@ const Remainder = mongoose.model(
       minlength: 3,
       maxlength: 1024,
     },
-    date: {
-      type: Object,
+    reminderDate: {
+      type: Date,
       required: true,
     },
     email: {
@@ -28,15 +33,16 @@ const Remainder = mongoose.model(
   })
 );
 
-function validateRemainder(remainder) {
+function validateReminder(reminder) {
   const schema = Joi.object({
+    userId: Joi.objectId().required(),
     name: Joi.string().min(3).max(50).label("Name").required(),
     description: Joi.string().min(3).max(1024).label("Description").required(),
-    date: Joi.object().label("Date").required(),
+    dateTime: Joi.object().label("Date and Time").required(),
     email: Joi.string().email().label("E-Mail").required(),
   });
-  return schema.validate(remainder);
+  return schema.validate(reminder);
 }
 
-exports.Remainder = Remainder;
-exports.validate = validateRemainder;
+exports.Reminder = Reminder;
+exports.validate = validateReminder;

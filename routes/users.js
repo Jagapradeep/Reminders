@@ -35,7 +35,7 @@ router.put("/:id", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { name, email, password } = req.body;
+  const { name, gender, email, password } = req.body;
 
   const user = await User.findByIdAndUpdate(
     req.params.id,

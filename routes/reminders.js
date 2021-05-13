@@ -1,54 +1,74 @@
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
-const { Remainder, validate } = require("../models/remainder");
+const auth = require("../middleware/auth");
+const { Reminder, validate } = require("../models/reminder");
+const {
+  addSchedule,
+  updateSchedule,
+  deleteSchedule,
+} = require("../utils/scheduleReminder");
 
 router.get("/", async (req, res) => {
-  const remainders = await Remainder.find();
-  res.send(remainders);
+  const reminders = await Reminder.find();
+  res.send(reminders);
 });
 
 router.get("/:id", async (req, res) => {
-  const remainder = await Remainder.findById(req.params.id);
-  if (!remainder)
-    return res.status(404).send("There is no remainder with the given ID.");
-  res.send(remainder);
+  const reminder = await Reminder.findById(req.params.id);
+  if (!reminder)
+    return res.status(404).send("There is no reminder with the given ID.");
+  res.send(reminder);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  remainder = new Remainder(
-    _.pick(req.body, ["name", "description", "time", "email"])
-  );
-  remainder = await remainder.save();
+  const { userId, name, dateTime, description, email } = req.body;
+  const { year, month, date, hour, minute } = dateTime;
+  let reminderDate = new Date(year, month, date, hour, minute);
 
-  res.send(_.pick(remainder, ["_id"]));
+  reminder = new Reminder({
+    userId,
+    name,
+    description,
+    reminderDate,
+    email,
+  });
+  reminder = await reminder.save();
+
+  addSchedule(reminder._id);
+  res.send(_.pick(reminder, ["_id"]));
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { name, description, time, email } = req.body;
+  const { userId, name, description, dateTime, email } = req.body;
+  const { year, month, date, hour, minute } = dateTime;
+  const reminderDate = new Date(year, month, date, hour, minute);
 
-  const remainder = await Remainder.findByIdAndUpdate(
+  const reminder = await Reminder.findByIdAndUpdate(
     req.params.id,
-    { name, description, time, email },
+    { userId, name, description, reminderDate, email },
     { new: true }
   );
-  if (!remainder)
-    return res.status(404).send("There is no remainder with the given ID.");
+  if (!reminder)
+    return res.status(404).send("There is no reminder with the given ID.");
 
-  res.send(remainder);
+  updateSchedule(reminder._id);
+  res.send(reminder);
 });
 
-router.delete("/:id", async (req, res) => {
-  const remainder = await Remainder.findByIdAndDelete(req.params.id);
-  if (!remainder)
-    return res.status(404).send("There is no remainder with the given ID.");
-  res.send(remainder);
+router.delete("/:id", auth, async (req, res) => {
+  const reminder = await Reminder.findByIdAndDelete(req.params.id);
+  if (!reminder)
+    return res.status(404).send("There is no reminder with the given ID.");
+
+  deleteSchedule(reminder._id);
+  res.send(reminder);
 });
 
 module.exports = router;
