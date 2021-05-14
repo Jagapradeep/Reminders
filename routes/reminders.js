@@ -39,7 +39,9 @@ router.post("/", auth, async (req, res) => {
   )
     return res
       .status(400)
-      .send("Please send the correct values for Date and Time");
+      .send(
+        `Please make sure all the values are included in "DateTime" object : "year, month, date, hour, minute"`
+      );
 
   const reminderDate = new Date(year, month, date, hour, minute);
 
@@ -74,7 +76,9 @@ router.put("/:id", auth, async (req, res) => {
   )
     return res
       .status(400)
-      .send("Please send the correct values for Date and Time");
+      .send(
+        `Please make sure all the values are included in "DateTime" object : "year, month, date, hour, minute"`
+      );
 
   const reminderDate = new Date(year, month, date, hour, minute);
 
