@@ -39,7 +39,6 @@
 | GET    | `http://localhost:{PortNumber}/users/{userID}` |
 | POST   | `http://localhost:{PortNumber}/users`          |
 | PUT    | `http://localhost:{PortNumber}/users/{userID}` |
-| DELETE | `http://localhost:{PortNumber}/users/{userID}` |
 
 ### REMINDER
 
