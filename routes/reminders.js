@@ -28,7 +28,15 @@ router.post("/", auth, async (req, res) => {
   const { userId, name, dateTime, description, email } = req.body;
   const { year, month, date, hour, minute } = dateTime;
 
-  if (!(year && month && date && hour && minute))
+  if (
+    !(
+      year &&
+      date &&
+      month != undefined &&
+      hour != undefined &&
+      minute != undefined
+    )
+  )
     return res
       .status(400)
       .send("Please send the correct values for Date and Time");
@@ -55,7 +63,15 @@ router.put("/:id", auth, async (req, res) => {
   const { userId, name, description, dateTime, email } = req.body;
   const { year, month, date, hour, minute } = dateTime;
 
-  if (!(year && month && date && hour && minute))
+  if (
+    !(
+      year &&
+      date &&
+      month != undefined &&
+      hour != undefined &&
+      minute != undefined
+    )
+  )
     return res
       .status(400)
       .send("Please send the correct values for Date and Time");
